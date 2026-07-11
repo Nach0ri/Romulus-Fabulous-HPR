@@ -2,9 +2,10 @@
 """
 newscript_imu.py
 
-Monitors the LSM6DSOX IMU and, once launch acceleration is detected
-(magnitude >= threshold, default 3G), starts logging high-rate IMU data
-(accel, gyro, temp) to a timestamped CSV file for the flight.
+Monitors the LSM6DSO32 IMU (Raspberry Pi Zero W v1.1 + Camera v2.1 rig) and,
+once launch acceleration is detected (magnitude >= threshold, default 3G),
+starts logging high-rate IMU data (accel, gyro, temp) to a timestamped CSV
+file for the flight.
 
 This script will attempt to run `check_headless_requirements.py` before
 initializing hardware; if the check fails the script exits early.
@@ -47,20 +48,16 @@ def run_headless_check(skip):
 def init_imu():
     try:
         import board
-        import adafruit_lsm6dsox
+        from adafruit_lsm6ds.lsm6dso32 import LSM6DSO32, AccelRange
     except Exception:
-        print('IMU libraries not available (board/adafruit_lsm6dsox).')
+        print('IMU libraries not available (board/adafruit_lsm6ds).')
         return None
     try:
         i2c = board.I2C()
-        imu = adafruit_lsm6dsox.LSM6DSOX(i2c)
+        imu = LSM6DSO32(i2c)
         try:
-            if hasattr(adafruit_lsm6dsox, 'RANGE_8G'):
-                imu.accelerometer_range = adafruit_lsm6dsox.RANGE_8G
-                print('Set accelerometer range to 8G')
-            elif hasattr(adafruit_lsm6dsox, 'RANGE_16G'):
-                imu.accelerometer_range = adafruit_lsm6dsox.RANGE_16G
-                print('Set accelerometer range to 16G')
+            imu.accelerometer_range = AccelRange.RANGE_32G
+            print('Set accelerometer range to 32G')
         except Exception:
             pass
         return imu
