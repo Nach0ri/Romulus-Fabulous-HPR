@@ -20,6 +20,8 @@ SAMPLE_RATE = 20         # Hz
 
 PHOTO_INTERVAL = 1       # second
 
+MAX_RUNTIME = 4 * 60     # seconds, auto-stop after this long
+
 
 # ============================
 # IMU SETUP
@@ -92,6 +94,10 @@ try:
         now = time.time()
         flight_time = now - start_time
 
+        if flight_time >= MAX_RUNTIME:
+            print("Max runtime reached, stopping...")
+            break
+
 
         # Read IMU
 
@@ -110,7 +116,7 @@ try:
 
 
         print(
-            f"Accel: {accel_g:.2f} g"
+            f"Time: {flight_time:.2f} s | Accel: {accel_g:.2f} g"
         )
 
 
