@@ -70,6 +70,7 @@ writer.writerow([
 
 launch_detected = False
 launch_counter = 0
+launch_time = None
 
 photo_number = 0
 last_photo_time = 0
@@ -94,8 +95,8 @@ try:
         now = time.time()
         flight_time = now - start_time
 
-        if flight_time >= MAX_RUNTIME:
-            print("Max runtime reached, stopping...")
+        if launch_detected and (now - launch_time) >= MAX_RUNTIME:
+            print("4 minutes since launch, stopping...")
             break
 
 
@@ -162,6 +163,7 @@ try:
             if launch_counter >= LAUNCH_COUNT:
 
                 launch_detected = True
+                launch_time = now
 
                 print(
                     "🚀 LAUNCH DETECTED"
